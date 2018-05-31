@@ -2,16 +2,21 @@
 ## get the value of the matrix, set the inverse Matrix and get the inverse Matrix.
 
 ## makeCacheMatrix: This function creates a special "matrix" object that can cache its inverse.
+### makeCacheMatrix creates a list containing a function to
+# 1. set the value of the matrix
+# 2. get the value of the matrix
+# 3. set the value of inverse of the matrix
+# 4. get the value of inverse of the matrix
 
 makeCacheMatrix <- function(x = matrix()) {
-  inv <- NULL
-  set <- function(y) {
+  inv <- NULL                                                ## initialize inv as NULL
+  set <- function(y) {                                       ## define the set function
     x <<- y
     inv <<- NULL
   }
-  get <- function() x
-  setInv <- function(inverse) inv <<- inverse
-  getInv <- function() inv
+  get <- function() x                                        ##define the get fucntion
+  setInv <- function(inverse) inv <<- inverse                ## assigns value of inv in parent environment
+  getInv <- function() inv                                   ## gets the value of inv
   list(set = set,
        get = get,
        setInv = setInv,
