@@ -15,3 +15,9 @@ You should create one R script called run_analysis.R that does the following.
     From the data set in step 4, creates a second, independent tidy data set with the average of each variable for each activity and each subject.
 
 Good luck!
+
+
+# This Repo contains :
+1. run_analysis.R  - script that performs the above mentioned steps
+2. CodeBook.md     - describing the varaibles and transformations
+3. tidydata.txt    - the final output 
