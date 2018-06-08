@@ -1,6 +1,6 @@
 # Coursera - Getting and cleaning data course project
 
-##Instructions
+## Instructions
 
 Here are the data for the project:
 
