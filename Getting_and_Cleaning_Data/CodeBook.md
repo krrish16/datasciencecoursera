@@ -1,11 +1,23 @@
 # About Script
-The run_analysis.R script does the following steps as described
+The run_analysis.R script does the following transformtions as described
 1. If the dataset.zip file isn't already downloaded then the file is downloaded and unzips the dataset.zip file 
 2. Reads the X_test.txt , X_train.txt , Y_test.txt , Y_train.txt , subject_test.txt ,subject_train.txt ,features.txt , activity_labels.txt data
 3. Then merges the (X_test,X_train) , (Y_test,Y_train) , (subject_test,subject_train) data files into 3 individual data sets
 4. Extracts only the measurements on the mean and standard deviation for each measurement
 5. Create a new data frame where the descriptive activity names are used to name the activities in the data frame
 6. Creates the required tidydata.txt file
+
+# Data Files
+The raw dataset included the following files:
+
+1. README.txt
+2. features_info.txt
+3. features.txt
+4. activity_labels.txt
+5. train/X_train.txt
+6. train/y_train.txt
+7. test/X_test.txt
+8. test/y_test.txt
 
 # Variables
 
