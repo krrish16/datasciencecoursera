@@ -1,0 +1,109 @@
+---
+title: "Week 2 Project 1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Loading Data
+
+```{r}
+library(ggplot2)
+data <- read.csv("./activity.csv")
+head(data)
+```
+
+## Missing Values
+
+```{r}
+sapply(data, function(x) sum(is.na(x)))
+```
+
+## Removing NA's
+
+```{r}
+na_rows <- which(is.na(data$steps))
+re_na_data <- data[-na_rows,]
+```
+
+## Number of Steps per day
+
+```{r}
+stepsperday <- aggregate(steps ~ date,data = data , FUN = sum)
+head(stepsperday)
+```
+
+## Histogram
+
+```{r}
+ggplot(stepsperday, aes(x = steps))+geom_histogram(fill = "blue", binwidth=1000)+labs(title = "Steps Per Day", x = "Steps", y = "Frequency")
+```
+
+## Mean and Median of the total number of steps taken per day
+
+```{r}
+mean_steps <- mean(stepsperday$steps)
+median_steps <- median(stepsperday$steps)
+print(paste("mean : ", round(mean_steps,2)))
+print(paste("median : ", round(median_steps,2)))
+```
+
+## Average daily activity pattern
+
+```{r}
+interval_steps <- aggregate(steps ~ interval,data = re_na_data , FUN =mean)
+ggplot(interval_steps, aes(x = interval, y=steps))+geom_line(color="blue")+labs(title = "Steps by Interval", x = "interval", y = "steps")
+```
+
+## 5 min interval with max no. of steps
+
+```{r}
+max_interval <- interval_steps[which.max(interval_steps$steps),]
+max_interval
+```
+
+## Number of missing values
+
+```{r}
+sapply(data, function(x) sum(is.na(x)))
+```
+
+## Filling NA's with mean of steps and creating a new Data set
+
+```{r}
+new_data <- data
+Val <- tapply(data$steps, data$interval, mean, na.rm=TRUE, simplify=TRUE)
+new_data$steps[na_rows] <- Val[as.character(new_data$interval[na_rows])]
+```
+
+## New Data Histogram
+
+```{r}
+new_stepsperday <- aggregate(steps ~ date,data = new_data , FUN = sum)
+head(new_stepsperday)
+ggplot(new_stepsperday, aes(x = steps))+geom_histogram(fill = "blue", binwidth=1000)+labs(title = "Steps Per Day", x = "Steps", y = "Frequency")
+```
+
+## Mean and Median of the total number of steps taken per day for new data
+
+```{r}
+new_mean_steps <- mean(new_stepsperday$steps)
+new_median_steps <- median(new_stepsperday$steps)
+print(paste("mean : ", round(new_mean_steps,2)))
+print(paste("median : ", round(new_median_steps,2)))
+```
+### Here the mean value for both cases are equal but in case of median there's a slight variation
+
+## Differences in activity patterns
+```{r}
+new_data$date <- as.Date(as.character(data$date))
+new_data$day <- weekdays(new_data$date)
+#?ifesle
+new_data$is_weekend <- ifelse(new_data$day=="Saturday" | new_data$day=="Sunday","yes", "no")
+weekends <- aggregate(steps ~ is_weekend + interval,data = new_data,FUN = mean)
+ggplot(weekends, aes(x = interval, y=steps, color= is_weekend)) + geom_line() + facet_grid(is_weekend ~ .) + labs(title = "Mean of Steps by Interval", x = "interval", y = "steps")
+```
+
+### It seems to be that there are more number of steps during weekends
