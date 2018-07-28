@@ -20,5 +20,7 @@ most likely due to a lack of good records. More recent years should be considere
 
 ## Questions
 Data analysis addresses the following questions:
+
 1.Across the United States, which types of events as indicated in the EVTYPE variable are most harmful with respect to population health?
+
 2.Across the United States, which types of events have the greatest economic consequences?
