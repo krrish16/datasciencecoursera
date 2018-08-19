@@ -1,0 +1,75 @@
+---
+title: "Basic Inferential Data Analysis"
+author: "krrish16"
+date: "18 August 2018"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+##PART-2 Overview
+
+The purpose of the this data analysis is to analyze the ToothGrowth data set by comparing the guinea tooth growth by supplement and dose. First the exploratory data analysis is performed on the data set. Then comparison with confidence intervals is done in order to make conclusions about the tooth growth.
+
+## Loading Data Set
+
+```{r}
+library(datasets)
+library(ggplot2)
+data(ToothGrowth)
+str(ToothGrowth)
+
+```
+
+## Summary of Data
+
+```{r}
+summary(ToothGrowth)
+t <- ToothGrowth
+
+ggplot(t, aes(x = supp, y = len)) + geom_boxplot(aes(fill = supp)) + xlab("Supp") + ylab("Tooth Length [mm]") + ggtitle("Tooth Length by Supplement")
+
+ggplot(t, aes(x=factor(dose), y=len)) + geom_boxplot(aes(fill = supp)) + labs(title="Guinea pig tooth length by dosage", x="Dose (mg/day)", y="Length")
+```
+
+From the plot it is clear that increasing the dosage increases the tooth growth. Orange juice(OJ) is more effective than Ascorbic acid(VC) for tooth growth when the dosage is 0.5 and 1.0 mg/day and are equally effective when the dosage is 2.0 mg/day.
+
+## Performing Hypothesis Tests
+
+```{r}
+unique(ToothGrowth$dose)
+```
+
+Hypothesis - 1 : Dosage = 0.5 mg/day
+```{r}
+t.test(len ~ supp, data = subset(t, dose == 0.5))
+```
+
+Hypothesis - 2 : Dosage = 1 mg/day
+```{r}
+t.test(len ~ supp, data = subset(t, dose == 1))
+```
+
+Hypothesis - 3 : Dosage = 2 mg/day
+```{r}
+t.test(len ~ supp, data = subset(t, dose == 2))
+```
+
+The confidence intervals for dose levels [1.72, 8,78] within 0.5 mg and [2.80, 9.06] within 1.0 mg allow for the rejection of the null hypothesis and a confirmation that there is a significant correlation between tooth length and dose levels. 
+However, the confidence interval for dose level 2.0[-3.80, 3.64] is not enough to reject the null hypothesis.
+
+## Assumptions and Conclusion
+
+Assumption: The T-Test performed above assumed the sample data was paired and the poplulations are independent, that the variances between populations are different and a random population was used.
+
+Conclusion from the exploratory data analyses indicate overall orange juice (OJ) increase tooth length more    effectively than ascorbic acid vitamin C (VC).
+
+1.When the guinea pigs received 0.5 mg dosage per day, OJ has higher mean tooth length of 13.23 compared to VC mean tooth length 7.98.
+
+2.When the guinea pigs received 1 mg dosage per day, OJ has higher mean tooth length of 22.70 vs. VC mean tooth length 16.77.
+
+3.However, when the guinea pigs received 2 mg dosage per day, the mean tooth length difference is very little, OJ has mean tooth length 26.06 and VC has mean tooth length 26.14.
