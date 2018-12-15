@@ -1,0 +1,110 @@
+---
+title: "PML Project"
+author: "krrish16"
+date: "15 December 2018"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction
+Using devices such as Jawbone Up, Nike FuelBand, and Fitbit it is now possible to collect a large amount of data about personal activity relatively inexpensively.One thing that people regularly do is quantify how much of a particular activity they do, but they rarely quantify how well they do it. They were asked to perform barbell lifts correctly and incorrectly in 5 different ways. In this project we will use data from accelerometers on the belt, forearm, arm, and dumbell of 6 participants and predict the manner in which they did the exercise.
+
+# Loading data and required packages
+```{r loading data}
+library(caret)
+library(rpart)
+library(rattle)
+library(rpart.plot)
+library(gbm)
+library(parallel)
+library(doParallel)
+cluster <- makeCluster(detectCores() - 1) # convention to leave 1 core for OS
+registerDoParallel(cluster)
+
+traindata <- read.csv(url("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-training.csv"),header=TRUE)
+dim(traindata)
+
+testdata <- read.csv(url("https://d396qusza40orc.cloudfront.net/predmachlearn/pml-testing.csv"),header=TRUE)
+dim(testdata)
+
+str(traindata)
+
+```
+The training data set consists of 19622 observations and 160 columns aslo many columns have NA values or blank value. So we will remove them, because they will not produce any information.Here we remove columns having at least 90% of NA or blank values on the training dataset
+
+# Cleaning Data
+```{r cleaning}
+remove <- which(colSums(is.na(traindata) |traindata=="") > 0.9*nrow(traindata)) 
+traindata_cleaned <- traindata[,-remove]
+
+# Also first 7 columns of training data set contain data which is not necessary for prediction
+traindata_cleaned <- traindata_cleaned[,-c(1:7)]
+dim(traindata_cleaned)
+
+# Similarly cleaning Test Data Set
+remove <- which(colSums(is.na(testdata) |testdata=="")>0.9*nrow(testdata)) 
+testdata_cleaned <- testdata[,-remove]
+testdata_cleaned <- testdata_cleaned[,-1]
+dim(testdata_cleaned)
+```
+
+# Partitioning the data
+```{r partitioning}
+set.seed(1234)
+inTrain <- createDataPartition(traindata_cleaned$classe, p=0.75, list=FALSE)
+Train <- traindata_cleaned[inTrain,]
+Test <- traindata_cleaned[-inTrain,]
+dim(Train);dim(Test)
+```
+
+# Using Classificaion Tree
+```{r class_tree training}
+trControl <- trainControl(method="cv", number=5 , allowParallel = TRUE)
+Class_tree_model <- train(classe~., data=Train, method="rpart", trControl=trControl)
+fancyRpartPlot(Class_tree_model$finalModel)
+
+```
+
+```{r class_tree predicting}
+class_tree_pred <- predict(Class_tree_model,newdata=Test)
+class_tree_confmat <- confusionMatrix(Test$classe,class_tree_pred)
+print(class_tree_confmat)
+```
+We see that the accuracy of Classification tree model is very low, about 50%.Lets try using Random Forests
+
+# Using Random Forests
+```{r rf training}
+rf_model <- train(classe~., data=Train, method="rf", trControl=trControl,verbose = FALSE)
+print(rf_model)
+plot(rf_model$finalModel)
+```
+
+```{r rf predicting}
+rf_pred <- predict(rf_model,newdata=Test)
+rf_confmat <- confusionMatrix(Test$classe,rf_pred)
+print(rf_confmat)
+print(rf_confmat$overall[1])
+```
+With Random forest, the accuracy is 99.4% with cross-validation with 5 folds which is a good accuracy score.Now we use Gradient boosting.
+
+# Using Gradient Boosting
+```{r gb training}
+gb_model <- train(classe~., data=Train, method="gbm", trControl=trControl,verbose = FALSE)
+print(gb_model)
+plot(gb_model)
+```
+
+```{r gb predicting}
+gb_pred <- predict(rf_model,newdata=Test)
+gb_confmat <- confusionMatrix(Test$classe,gb_pred)
+print(gb_confmat)
+print(gb_confmat$overall[1])
+
+```
+With Random forest, the accuracy is also nearly same as that of Random forest , 99.4% with cross-validation with 5 folds.
+
+# Conclusion
+So both Random forest and Gradient boosting gave similar overall accuracy score and we can use any of them on the Testdata. But I personally prefer Random Forest
