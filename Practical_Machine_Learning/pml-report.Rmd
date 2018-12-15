@@ -106,5 +106,18 @@ print(gb_confmat$overall[1])
 ```
 With Random forest, the accuracy is also nearly same as that of Random forest , 99.4% with cross-validation with 5 folds.
 
+# Out of Sample Error
+```{}
+dim(Test)
+pred <- train(classe~., data=Test, method="rf", trControl=trControl,verbose = FALSE)
+print(pred)
+```
+Now the Out of sample accuracy estimated at 0.9665, or 96.65% So that means the out-of-sample error is about 0.0335, or 3.35%
+
 # Conclusion
 So both Random forest and Gradient boosting gave similar overall accuracy score and we can use any of them on the Testdata. But I personally prefer Random Forest
+```{}
+
+Result <- predict(rf_model, newdata=testdata_cleaned)
+Result
+```
