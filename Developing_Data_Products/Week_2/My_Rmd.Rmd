@@ -1,0 +1,34 @@
+---
+title: "7 Wonders of India"
+author: "author : Krishna"
+date: "14 January 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r leaflet , echo=FALSE, }
+library(leaflet)
+
+wonders <- iconList(
+  bahubali = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/11/Statue-of-Gomateshwara.jpg", 48, 48),
+  hampi = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/08/Untitled-design-95.jpg", 48, 48),
+  sahib = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/08/Golden-Temple-Amritsar.jpg", 48, 48),
+  khajuraho = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/08/khajuraho-temple-2.jpg", 48, 48),
+  konark = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/11/Suntemple-Konark.jpg", 48, 48),
+  nalanda = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/11/Nalanda-University-The-ruins-of-Nalanda-Mahavihara-at-the-Nalanda-University-excavation-site.jpg", 48, 48),
+  taj = makeIcon("https://d27k8xmh3cuzik.cloudfront.net/wp-content/uploads/2016/08/taj-mahal.jpg", 48, 48)
+  )
+
+df <- data.frame(lat =c(13.203776,15.332384,31.620236,24.832447,19.887981,25.134466,27.175320),lng = c(75.005555,76.463450,74.876485,79.920754,86.094470,85.461464,78.042627))
+
+pnames <- c("Gomateshwara, Karnataka","Hampi, Karnataka","Harmandir Sahib Golden Temple, Punjab","Khajuraho","Konark Sun Temple","Nalanda","Taj Mahal")
+
+df %>%
+  leaflet() %>% 
+  addTiles() %>%
+  addMarkers(icon = wonders, popup = pnames)
+  
+```
