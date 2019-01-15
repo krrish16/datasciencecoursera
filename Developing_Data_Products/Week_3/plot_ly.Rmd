@@ -1,0 +1,44 @@
+---
+title: "Data Visualizations-Iris Dataset"
+author: 'author : Krishna'
+date: "15 January 2019"
+output: slidy_presentation
+---
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r hist, message=FALSE,echo=FALSE,fig.align='center',fig.cap="Histogram"}
+library(plotly)
+library(datasets)
+data("iris")
+
+p1 <- plot_ly(iris, x = iris$Sepal.Length , type = "histogram",name = "S Length")
+p2 <- plot_ly(iris, x = iris$Petal.Length , type = "histogram",name = "P Length")
+p3 <- plot_ly(iris, x = iris$Sepal.Width , type = "histogram",name = "S Width")
+p4 <- plot_ly(iris, x = iris$Petal.Width , type = "histogram" , name = "P Width")
+p <- subplot(p1,p2,p3,p4,nrows = 2,shareX = TRUE)
+p
+```
+***
+```{r box, message=FALSE,echo=FALSE,fig.align='center',fig.cap="Boxplot"}
+
+p5 <- plot_ly(iris, y = iris$Sepal.Length,color = ~Species , type = "box")
+p6 <- plot_ly(iris, y = iris$Petal.Length,color = ~Species , type = "box")
+p7 <- plot_ly(iris, y = iris$Sepal.Width,color = ~Species  , type = "box")
+p8 <- plot_ly(iris, y = iris$Petal.Width,color = ~Species  , type = "box")
+pp <- subplot(p5,p6,p7,p8,nrows = 2,shareX = TRUE)
+pp
+```
+***
+```{r corr, message=FALSE,echo=FALSE,fig.align='center',fig.cap="Corrleation plot"}
+
+library(GGally)
+ppp <- ggpairs(data = iris[1:4],upper = list(continuous = wrap("cor", size = 5)), lower = list(continuous = "smooth"))
+
+ppp <- ggplotly(ppp)
+ppp
+
+```
+
+### Thank You
